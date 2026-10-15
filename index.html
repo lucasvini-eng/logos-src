@@ -3,639 +3,1055 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hiper Popular Drogarias - Sua Saúde em Primeiro Lugar</title>
-    <!-- Tailwind CSS -->
+    <title>Farmácia Santa Sophia - Cuidado e Saúde Mais Perto de Você</title>
+    <meta name="description" content="Farmácia Santa Sophia - Encontre produtos de higiene, cuidados com a pele, suplementos e muito mais. Faça seu pedido diretamente pelo WhatsApp!">
+    
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Inter Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        primary: '#dc2626', // Vermelho forte inspirado na logo
-                        secondary: '#eab308', // Amarelo/Dourado inspirado na cruz da logo
-                        dark: '#1e293b',
-                        light: '#f8fafc'
+                        pharmacy: {
+                            blue: '#0B3080',    /* Extracted Deep Navy Blue from logo */
+                            blueDark: '#08215A',
+                            red: '#E30613',     /* Extracted Vibrant Red from logo */
+                            redDark: '#B8040F',
+                            lightBg: '#F4F7FA',
+                            cardBg: '#FFFFFF',
+                            text: '#1F2937',
+                            subtext: '#4B5563'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
                     }
                 }
             }
         }
     </script>
-    <!-- FontAwesome for Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts Inter -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
     <style>
-        body { font-family: 'Inter', sans-serif; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F4F7FA;
+            color: #1F2937;
+        }
+        
+        /* Custom scrollbars */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #0B3080;
+            border-radius: 4px;
+        }
+        
+        /* Modal & Slide-over transitions */
+        .cart-drawer {
+            transition: transform 0.3s ease-in-out;
+        }
+        .cart-drawer.closed {
+            transform: translateX(100%);
+        }
+        .cart-drawer.open {
+            transform: translateX(0);
+        }
+        
+        /* Pulse animation for CTA buttons */
+        @keyframes subtlePulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.03); }
+        }
+        .animate-pulse-subtle {
+            animation: subtlePulse 2.5s infinite;
+        }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-800 antialiased flex flex-col min-h-screen">
+<body class="bg-pharmacy-lightBg text-pharmacy-text min-h-screen flex flex-col justify-between">
 
-    <!-- Cabeçalho -->
-    <header class="sticky top-0 z-50 bg-white shadow-md">
-        <div class="bg-primary text-white text-xs py-1.5 px-4 text-center font-medium">
-            <i class="fa-solid fa-truck-fast mr-1"></i> Entrega rápida em toda a região • Faça seu pedido direto pelo WhatsApp!
-        </div>
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
-            <!-- Logo e Nome -->
-            <a href="#" class="flex items-center gap-3 group">
-                <div class="w-12 h-12 rounded-full bg-white shadow-sm flex items-center justify-center p-1 border border-slate-100 overflow-hidden">
-                    <!-- Logo simulada baseada na imagem enviada -->
-                    <svg viewBox="0 0 100 100" class="w-full h-full">
-                        <rect x="25" y="15" width="30" height="70" rx="6" fill="#eab308" />
-                        <rect x="15" y="35" width="70" height="40" rx="6" fill="#dc2626" />
-                    </svg>
-                </div>
-                <div>
-                    <span class="text-xl font-bold tracking-tight text-primary block leading-tight">Hiper Popular</span>
-                    <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider block">Drogarias</span>
-                </div>
-            </a>
-
-            <!-- Navegação Desktop -->
-            <nav class="hidden md:flex items-center gap-8 font-medium text-slate-600">
-                <a href="#inicio" class="hover:text-primary transition">Início</a>
-                <a href="#categorias" class="hover:text-primary transition">Categorias</a>
-                <a href="#produtos" class="hover:text-primary transition">Produtos</a>
-                <a href="#sobre" class="hover:text-primary transition">Sobre Nós</a>
-                <a href="#contato" class="hover:text-primary transition">Contato</a>
-            </nav>
-
-            <!-- Ações (Carrinho e WhatsApp) -->
-            <div class="flex items-center gap-3">
-                <!-- Botão Carrinho -->
-                <button onclick="toggleCartModal()" class="relative bg-slate-100 hover:bg-slate-200 text-slate-700 p-3 rounded-full transition flex items-center justify-center w-11 h-11 focus:outline-none" aria-label="Abrir carrinho">
-                    <i class="fa-solid fa-shopping-bag text-lg"></i>
-                    <span id="cart-badge" class="absolute -top-1 -right-1 bg-primary text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center shadow-sm">0</span>
-                </button>
-
-                <!-- Botão WhatsApp Topo -->
-                <a href="https://wa.me/5582996402650?text=Olá!%20Gostaria%20de%20tirar%20dúvidas%20sobre%20produtos." target="_blank" class="hidden sm:inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2.5 rounded-xl font-semibold shadow-sm transition text-sm">
-                    <i class="fa-brands fa-whatsapp text-lg"></i>
-                    <span>Fale Conosco</span>
+    <!-- HEADER SECTION -->
+    <header class="sticky top-0 z-40 bg-white shadow-md border-b border-gray-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                
+                <!-- Logo & Brand Name -->
+                <a href="#" class="flex items-center gap-3 group focus:outline-none focus:ring-2 focus:ring-pharmacy-blue rounded-lg p-1">
+                    <!-- Inline SVG Logo inspired directly by user provided image -->
+                    <div class="relative w-12 h-12 flex-shrink-0">
+                        <svg viewBox="0 0 100 100" class="w-full h-full drop-shadow">
+                            <!-- Outer Blue Circle -->
+                            <circle cx="50" cy="50" r="46" fill="white" stroke="#0B3080" stroke-width="7" />
+                            <!-- Cross Emblem in Navy Blue -->
+                            <path d="M 38 20 H 62 V 38 H 80 V 62 H 62 V 80 H 38 V 62 H 20 V 38 H 38 Z" fill="#0B3080" />
+                            <!-- White/Red 'C' Shape inside -->
+                            <path d="M 60 38 A 12 12 0 1 0 60 62" fill="none" stroke="white" stroke-width="6" stroke-linecap="round"/>
+                            <path d="M 52 42 A 8 8 0 0 1 52 58" fill="#E30613"/>
+                        </svg>
+                    </div>
+                    <div class="flex flex-col">
+                        <span class="text-xs font-bold tracking-widest text-pharmacy-blue uppercase">FARMÁCIA</span>
+                        <span class="text-lg font-black tracking-tight text-pharmacy-red leading-none">SANTA SOPHIA</span>
+                    </div>
                 </a>
 
-                <!-- Menu Mobile Toggle -->
-                <button onclick="toggleMobileMenu()" class="md:hidden text-slate-700 p-2 focus:outline-none">
-                    <i class="fa-solid fa-bars text-xl"></i>
-                </button>
+                <!-- Desktop Navigation Links -->
+                <nav class="hidden md:flex space-x-6 text-sm font-semibold text-pharmacy-subtext">
+                    <a href="#inicio" class="hover:text-pharmacy-blue transition-colors py-2 border-b-2 border-transparent hover:border-pharmacy-blue">Início</a>
+                    <a href="#categorias" class="hover:text-pharmacy-blue transition-colors py-2 border-b-2 border-transparent hover:border-pharmacy-blue">Categorias</a>
+                    <a href="#produtos" class="hover:text-pharmacy-blue transition-colors py-2 border-b-2 border-transparent hover:border-pharmacy-blue">Produtos</a>
+                    <a href="#sobre" class="hover:text-pharmacy-blue transition-colors py-2 border-b-2 border-transparent hover:border-pharmacy-blue">Sobre Nós</a>
+                    <a href="#contato" class="hover:text-pharmacy-blue transition-colors py-2 border-b-2 border-transparent hover:border-pharmacy-blue">Contato</a>
+                </nav>
+
+                <!-- Actions: Cart + WhatsApp Header Button -->
+                <div class="flex items-center gap-3">
+                    <!-- Cart Toggle Button -->
+                    <button id="cart-toggle-btn" aria-label="Abrir carrinho de compras" class="relative bg-pharmacy-lightBg hover:bg-gray-200 text-pharmacy-blue p-3 rounded-full transition-all duration-200 focus:ring-2 focus:ring-pharmacy-blue">
+                        <i class="fa-solid fa-cart-shopping text-lg"></i>
+                        <span id="cart-badge" class="absolute -top-1 -right-1 bg-pharmacy-red text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center hidden">0</span>
+                    </button>
+
+                    <!-- Header WhatsApp Action Button -->
+                    <button onclick="window.pharmacyApp.openGeneralWhatsApp()" class="hidden sm:flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-sm px-4 py-2.5 rounded-full shadow-sm hover:shadow-md transition-all duration-200">
+                        <i class="fa-brands fa-whatsapp text-lg"></i>
+                        <span>Fazer pedido</span>
+                    </button>
+
+                    <!-- Mobile Menu Hamburger Button -->
+                    <button id="mobile-menu-btn" aria-label="Abrir menu de navegação" class="md:hidden text-pharmacy-blue p-2 text-xl focus:outline-none">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+                </div>
             </div>
         </div>
 
-        <!-- Menu Mobile Drawer -->
-        <div id="mobile-menu" class="hidden md:hidden bg-white border-b px-4 pt-2 pb-4 space-y-3">
-            <a href="#inicio" onclick="toggleMobileMenu()" class="block py-2 text-slate-700 font-medium border-b border-slate-100">Início</a>
-            <a href="#categorias" onclick="toggleMobileMenu()" class="block py-2 text-slate-700 font-medium border-b border-slate-100">Categorias</a>
-            <a href="#produtos" onclick="toggleMobileMenu()" class="block py-2 text-slate-700 font-medium border-b border-slate-100">Produtos</a>
-            <a href="#sobre" onclick="toggleMobileMenu()" class="block py-2 text-slate-700 font-medium border-b border-slate-100">Sobre Nós</a>
-            <a href="#contato" onclick="toggleMobileMenu()" class="block py-2 text-slate-700 font-medium">Contato</a>
-            <a href="https://wa.me/5582996402650?text=Olá!%20Gostaria%20de%20fazer%20um%20pedido." target="_blank" class="w-full flex items-center justify-center gap-2 bg-emerald-600 text-white py-3 rounded-xl font-semibold mt-2">
-                <i class="fa-brands fa-whatsapp text-lg"></i> Fazer Pedido WhatsApp
-            </a>
+        <!-- Mobile Navigation Menu Dropdown -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-b border-gray-200 px-4 pt-2 pb-4 space-y-2">
+            <a href="#inicio" class="block px-3 py-2 rounded-md font-medium text-pharmacy-text hover:bg-pharmacy-lightBg hover:text-pharmacy-blue">Início</a>
+            <a href="#categorias" class="block px-3 py-2 rounded-md font-medium text-pharmacy-text hover:bg-pharmacy-lightBg hover:text-pharmacy-blue">Categorias</a>
+            <a href="#produtos" class="block px-3 py-2 rounded-md font-medium text-pharmacy-text hover:bg-pharmacy-lightBg hover:text-pharmacy-blue">Produtos</a>
+            <a href="#sobre" class="block px-3 py-2 rounded-md font-medium text-pharmacy-text hover:bg-pharmacy-lightBg hover:text-pharmacy-blue">Sobre Nós</a>
+            <a href="#contato" class="block px-3 py-2 rounded-md font-medium text-pharmacy-text hover:bg-pharmacy-lightBg hover:text-pharmacy-blue">Contato</a>
+            <button onclick="window.pharmacyApp.openGeneralWhatsApp()" class="w-full flex items-center justify-center gap-2 bg-emerald-600 text-white font-semibold py-2.5 rounded-xl shadow mt-2">
+                <i class="fa-brands fa-whatsapp text-lg"></i>
+                <span>Fazer pedido pelo WhatsApp</span>
+            </button>
         </div>
     </header>
 
-    <!-- Hero Banner -->
-    <section id="inicio" class="relative bg-gradient-to-r from-slate-900 to-slate-800 text-white py-20 lg:py-28 overflow-hidden">
-        <div class="absolute inset-0 opacity-20 bg-[radial-gradient(#eab308_1px,transparent_1px)] [background-size:16px_16px]"></div>
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div class="space-y-6">
-                <span class="bg-secondary/20 text-secondary text-xs font-bold uppercase tracking-wider px-3 py-1.5 rounded-lg border border-secondary/30 inline-block">Sua Farmácia de Confiança</span>
-                <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-tight">
-                    Cuidado e saúde <span class="text-secondary">mais perto de você.</span>
-                </h1>
-                <p class="text-slate-300 text-lg max-w-xl">
-                    Encontre produtos para o seu dia a dia, higiene, cuidados pessoais e faça seu pedido de maneira simples e prática pelo WhatsApp.
-                </p>
-                <div class="flex flex-wrap gap-4 pt-2">
-                    <a href="#produtos" class="bg-primary hover:bg-red-700 text-white px-8 py-4 rounded-xl font-bold shadow-lg shadow-primary/30 transition flex items-center gap-2">
-                        <i class="fa-solid fa-pills"></i> Ver Produtos
-                    </a>
-                    <a href="https://wa.me/5582996402650?text=Olá!%20Gostaria%20de%20falar%20com%20a%20farmácia." target="_blank" class="bg-emerald-600 hover:bg-emerald-700 text-white px-8 py-4 rounded-xl font-bold shadow-lg shadow-emerald-600/30 transition flex items-center gap-2">
-                        <i class="fa-brands fa-whatsapp text-lg"></i> Falar com a Farmácia
-                    </a>
-                </div>
-            </div>
-            <div class="relative flex justify-center">
-                <div class="relative w-full max-w-md bg-white/10 backdrop-blur-md rounded-3xl p-6 border border-white/20 shadow-2xl">
-                    <div class="flex items-center gap-4 mb-6">
-                        <div class="w-14 h-14 rounded-2xl bg-secondary flex items-center justify-center text-slate-900 text-2xl font-black shadow">
-                            <i class="fa-solid fa-prescription-bottle-medical"></i>
-                        </div>
-                        <div>
-                            <h3 class="text-xl font-bold">Atendimento Ágil</h3>
-                            <p class="text-slate-300 text-sm">Monte seu pedido e envie direto</p>
-                        </div>
-                    </div>
-                    <div class="space-y-3">
-                        <div class="bg-white/5 p-4 rounded-xl border border-white/10 flex items-center justify-between">
-                            <span class="text-sm font-medium">Economia e Variedade</span>
-                            <i class="fa-solid fa-check text-secondary"></i>
-                        </div>
-                        <div class="bg-white/5 p-4 rounded-xl border border-white/10 flex items-center justify-between">
-                            <span class="text-sm font-medium">Produtos Selecionados</span>
-                            <i class="fa-solid fa-check text-secondary"></i>
-                        </div>
-                        <div class="bg-white/5 p-4 rounded-xl border border-white/10 flex items-center justify-between">
-                            <span class="text-sm font-medium">Retirada ou Entrega Consultada</span>
-                            <i class="fa-solid fa-check text-secondary"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Categorias -->
-    <section id="categorias" class="py-16 bg-white">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center max-w-2xl mx-auto mb-12">
-                <h2 class="text-3xl font-bold text-slate-900 tracking-tight">Nossas Categorias</h2>
-                <p class="text-slate-500 mt-2">Navegue pelas seções e encontre o que precisa para o seu bem-estar.</p>
-            </div>
-            <div id="categories-container" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-8 gap-4">
-                <!-- Preenchido via JS -->
-            </div>
-        </div>
-    </section>
-
-    <!-- Catálogo de Produtos -->
-    <section id="produtos" class="py-16 bg-slate-50 border-t border-slate-200">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
-                <div>
-                    <h2 class="text-3xl font-bold text-slate-900 tracking-tight">Catálogo de Produtos</h2>
-                    <p class="text-slate-500 mt-1">Selecione os itens desejados para montar seu pedido no WhatsApp.</p>
-                </div>
-                <!-- Barra de Busca -->
-                <div class="w-full md:w-80">
-                    <div class="relative">
-                        <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                            <i class="fa-solid fa-magnifying-glass"></i>
+    <main class="flex-grow">
+        <!-- BANNER / HERO SECTION -->
+        <section id="inicio" class="relative bg-gradient-to-r from-pharmacy-blue to-pharmacy-blueDark text-white py-16 lg:py-24 overflow-hidden">
+            <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:16px_16px]"></div>
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                    
+                    <div class="lg:col-span-7 space-y-6 text-center lg:text-left">
+                        <span class="inline-block bg-pharmacy-red/20 text-red-200 text-xs sm:text-sm font-semibold px-3 py-1 rounded-full border border-pharmacy-red/30">
+                            <i class="fa-solid fa-heart-pulse mr-1"></i> Sua saúde é a nossa prioridade
                         </span>
-                        <input type="text" id="search-input" oninput="filterProducts()" placeholder="Buscar produto..." class="w-full pl-10 pr-4 py-3 bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/50 text-sm shadow-sm">
+                        <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight leading-tight">
+                            Cuidado e saúde <span class="text-pharmacy-red">mais perto</span> de você.
+                        </h1>
+                        <p class="text-base sm:text-lg text-blue-100 max-w-2xl mx-auto lg:mx-0 leading-relaxed">
+                            Encontre produtos para o seu dia a dia e faça seu pedido de maneira simples, rápida e prática diretamente pelo WhatsApp.
+                        </p>
+                        <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-2">
+                            <a href="#produtos" class="w-full sm:w-auto bg-pharmacy-red hover:bg-pharmacy-redDark text-white font-bold px-8 py-3.5 rounded-xl shadow-lg transition-all duration-200 text-center">
+                                <i class="fa-solid fa-store mr-2"></i> Ver Produtos
+                            </a>
+                            <button onclick="window.pharmacyApp.openGeneralWhatsApp()" class="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-8 py-3.5 rounded-xl shadow-lg transition-all duration-200 flex items-center justify-center gap-2">
+                                <i class="fa-brands fa-whatsapp text-xl"></i> Falar com a Farmácia
+                            </button>
+                        </div>
+                        <!-- Features Pill Highlights -->
+                        <div class="pt-6 grid grid-cols-3 gap-2 text-xs sm:text-sm text-blue-100 border-t border-blue-800/60 mt-6">
+                            <div class="flex items-center justify-center lg:justify-start gap-2">
+                                <i class="fa-solid fa-truck-fast text-pharmacy-red"></i> Entrega Rápida
+                            </div>
+                            <div class="flex items-center justify-center lg:justify-start gap-2">
+                                <i class="fa-solid fa-certificate text-pharmacy-red"></i> Qualidade Garantida
+                            </div>
+                            <div class="flex items-center justify-center lg:justify-start gap-2">
+                                <i class="fa-solid fa-user-nurse text-pharmacy-red"></i> Atendimento Humano
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </div>
 
-            <!-- Grid de Produtos -->
-            <div id="products-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                <!-- Renderizado dinamicamente via JS -->
-            </div>
-            
-            <div id="no-products" class="hidden text-center py-16">
-                <div class="text-slate-400 text-5xl mb-3"><i class="fa-solid fa-box-open"></i></div>
-                <h3 class="text-lg font-semibold text-slate-700">Nenhum produto encontrado</h3>
-                <p class="text-slate-500 text-sm mt-1">Tente buscar por outro termo ou categoria.</p>
-            </div>
-        </div>
-    </section>
+                    <!-- Banner Illustration Card -->
+                    <div class="lg:col-span-5 flex justify-center">
+                        <div class="relative w-full max-w-md bg-white p-6 rounded-2xl shadow-2xl text-pharmacy-text transform border-4 border-white/20">
+                            <div class="rounded-xl overflow-hidden mb-4 bg-pharmacy-lightBg relative h-48 flex items-center justify-center">
+                                <img src="https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?auto=format&fit=crop&w=600&q=80" 
+                                     alt="Ambiente farmacêutico e cuidados com a saúde" 
+                                     class="w-full h-full object-cover"
+                                     onerror="this.src='https://placehold.co/600x400/0B3080/ffffff?text=Farm%C3%A1cia+Santa+Sophia'">
+                                <div class="absolute top-3 right-3 bg-white/90 backdrop-blur-md px-3 py-1 rounded-full text-xs font-bold text-pharmacy-blue shadow">
+                                    <i class="fa-solid fa-circle-check text-emerald-500 mr-1"></i> Atendimento Direto
+                                </div>
+                            </div>
+                            <h3 class="font-bold text-lg text-pharmacy-blue mb-1">Monte seu carrinho digital</h3>
+                            <p class="text-xs text-pharmacy-subtext mb-4">Selecione os itens e receba a confirmação em instantes pelo nosso WhatsApp comercial.</p>
+                            <a href="#produtos" class="block text-center w-full bg-pharmacy-lightBg hover:bg-pharmacy-blue hover:text-white text-pharmacy-blue font-semibold py-2.5 rounded-lg border border-pharmacy-blue/20 transition-all text-sm">
+                                Explore nosso catálogo
+                            </a>
+                        </div>
+                    </div>
 
-    <!-- Sobre Nós -->
-    <section id="sobre" class="py-16 bg-white border-t border-slate-200">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div class="space-y-6">
-                <span class="bg-primary/10 text-primary text-xs font-bold uppercase tracking-wider px-3 py-1.5 rounded-lg">Sobre a Farmácia</span>
-                <h2 class="text-3xl font-bold text-slate-900 tracking-tight">Compromisso com a sua saúde e economia todos os dias.</h2>
-                <p class="text-slate-600 leading-relaxed">
-                    A <strong class="text-slate-800">Hiper Popular Drogarias</strong> preza pela excelência no atendimento, oferecendo uma ampla variedade de produtos de higiene, cuidados pessoais, suplementos e itens essenciais para toda a família.
-                </p>
-                <p class="text-slate-600 leading-relaxed">
-                    Nosso objetivo é facilitar o seu acesso a produtos de qualidade com preços acessíveis. Utilize nosso catálogo digital para montar sua lista e enviar o pedido diretamente via WhatsApp com total comodidade.
-                </p>
-                <div class="grid grid-cols-2 gap-4 pt-2">
-                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-100">
-                        <div class="text-primary font-bold text-xl mb-1"><i class="fa-solid fa-shield-halved"></i></div>
-                        <h4 class="font-semibold text-slate-800 text-sm">Atendimento Responsivo</h4>
-                        <p class="text-xs text-slate-500 mt-1">Equipe pronta para auxiliar com rapidez.</p>
-                    </div>
-                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-100">
-                        <div class="text-primary font-bold text-xl mb-1"><i class="fa-solid fa-tags"></i></div>
-                        <h4 class="font-semibold text-slate-800 text-sm">Preços Acessíveis</h4>
-                        <p class="text-xs text-slate-500 mt-1">Condições especiais para você e sua família.</p>
-                    </div>
                 </div>
             </div>
-            <div class="bg-gradient-to-br from-primary/5 to-secondary/10 p-8 rounded-3xl border border-slate-100 relative">
-                <div class="text-center space-y-4">
-                    <div class="w-24 h-24 bg-white rounded-full shadow-md mx-auto flex items-center justify-center p-2 border border-slate-200">
-                        <svg viewBox="0 0 100 100" class="w-full h-full">
-                            <rect x="25" y="15" width="30" height="70" rx="6" fill="#eab308" />
-                            <rect x="15" y="35" width="70" height="40" rx="6" fill="#dc2626" />
-                        </svg>
-                    </div>
-                    <h3 class="text-2xl font-bold text-slate-800">Hiper Popular Drogarias</h3>
-                    <p class="text-sm text-slate-600 max-w-sm mx-auto">Sempre perto de você com compromisso, dedicação e ética profissional.</p>
-                    <div class="pt-2">
-                        <a href="https://wa.me/5582996402650?text=Olá!%20Gostaria%20de%20saber%20mais%20sobre%20a%20farmácia." target="_blank" class="inline-flex items-center gap-2 bg-emerald-600 text-white px-6 py-3 rounded-xl font-semibold text-sm shadow-sm hover:bg-emerald-700 transition">
-                            <i class="fa-brands fa-whatsapp text-lg"></i> Falar com Atendente
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- Contato e Informações -->
-    <section id="contato" class="py-16 bg-slate-50 border-t border-slate-200">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center max-w-2xl mx-auto mb-12">
-                <h2 class="text-3xl font-bold text-slate-900 tracking-tight">Canais de Atendimento</h2>
-                <p class="text-slate-500 mt-2">Entre em contato conosco ou tire suas dúvidas.</p>
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 text-center space-y-3">
-                    <div class="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-xl flex items-center justify-center mx-auto text-xl">
-                        <i class="fa-brands fa-whatsapp"></i>
-                    </div>
-                    <h3 class="font-bold text-slate-800 text-lg">WhatsApp</h3>
-                    <p class="text-sm text-slate-600">(82) 99640-2650</p>
-                    <a href="https://wa.me/5582996402650?text=Olá!%20Vim%20pelo%20site." target="_blank" class="inline-block text-sm font-semibold text-emerald-600 hover:text-emerald-700 pt-1">Iniciar Conversa →</a>
+        <!-- CATEGORIES SECTION -->
+        <section id="categorias" class="py-12 bg-white border-b border-gray-100">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center max-w-3xl mx-auto mb-10">
+                    <h2 class="text-2xl sm:text-3xl font-extrabold text-pharmacy-blue mb-2">Nossas Categorias</h2>
+                    <p class="text-pharmacy-subtext text-sm sm:text-base">Navegue pelas nossas seções organizadas para encontrar exatamente o que você precisa.</p>
                 </div>
-                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 text-center space-y-3">
-                    <div class="w-12 h-12 bg-red-100 text-primary rounded-xl flex items-center justify-center mx-auto text-xl">
-                        <i class="fa-solid fa-clock"></i>
-                    </div>
-                    <h3 class="font-bold text-slate-800 text-lg">Horário de Funcionamento</h3>
-                    <p class="text-sm text-slate-600">Segunda a Sábado: 08:00 às 21:00<br>Domingos e Feriados: 08:00 às 14:00</p>
-                    <span class="inline-block text-xs text-slate-400 pt-1">Sujeito a feriados locais</span>
-                </div>
-                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 text-center space-y-3">
-                    <div class="w-12 h-12 bg-amber-100 text-amber-600 rounded-xl flex items-center justify-center mx-auto text-xl">
-                        <i class="fa-solid fa-location-dot"></i>
-                    </div>
-                    <h3 class="font-bold text-slate-800 text-lg">Localização</h3>
-                    <p class="text-sm text-slate-600">Consulte nossa unidade física ou solicite entrega em sua região.</p>
-                    <span class="inline-block text-xs text-emerald-600 font-semibold pt-1">Atendimento Regional</span>
-                </div>
-            </div>
-        </div>
-    </section>
 
-    <!-- Rodapé -->
-    <footer class="bg-slate-900 text-slate-400 py-12 mt-auto border-t border-slate-800">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
-            <div class="space-y-4">
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-full bg-white flex items-center justify-center p-1">
-                        <svg viewBox="0 0 100 100" class="w-full h-full">
-                            <rect x="25" y="15" width="30" height="70" rx="6" fill="#eab308" />
-                            <rect x="15" y="35" width="70" height="40" rx="6" fill="#dc2626" />
-                        </svg>
-                    </div>
-                    <span class="text-lg font-bold text-white">Hiper Popular Drogarias</span>
+                <div id="categories-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-8 gap-3 sm:gap-4">
+                    <!-- Categories rendered dynamically via JS -->
                 </div>
-                <p class="text-xs text-slate-400 leading-relaxed">
-                    Sua vitrine digital de saúde e bem-estar. Os preços e a disponibilidade dos produtos estão sujeitos à confirmação no atendimento via WhatsApp.
-                </p>
-            </div>
-            <div>
-                <h4 class="text-white font-semibold mb-4 text-sm uppercase tracking-wider">Links Rápidos</h4>
-                <ul class="space-y-2 text-sm">
-                    <li><a href="#inicio" class="hover:text-white transition">Início</a></li>
-                    <li><a href="#categorias" class="hover:text-white transition">Categorias</a></li>
-                    <li><a href="#produtos" class="hover:text-white transition">Catálogo de Produtos</a></li>
-                    <li><a href="#sobre" class="hover:text-white transition">Sobre Nós</a></li>
-                </ul>
-            </div>
-            <div>
-                <h4 class="text-white font-semibold mb-4 text-sm uppercase tracking-wider">Categorias</h4>
-                <ul class="space-y-2 text-sm">
-                    <li><a href="#produtos" onclick="filterByCategory('Higiene pessoal')" class="hover:text-white transition">Higiene Pessoal</a></li>
-                    <li><a href="#produtos" onclick="filterByCategory('Cuidados com a pele')" class="hover:text-white transition">Cuidados com a Pele</a></li>
-                    <li><a href="#produtos" onclick="filterByCategory('Vitaminas e suplementos')" class="hover:text-white transition">Vitaminas e Suplementos</a></li>
-                    <li><a href="#produtos" onclick="filterByCategory('Primeiros socorros')" class="hover:text-white transition">Primeiros Socorros</a></li>
-                </ul>
-            </div>
-            <div>
-                <h4 class="text-white font-semibold mb-4 text-sm uppercase tracking-wider">Contato WhatsApp</h4>
-                <p class="text-sm mb-3">Faça seus pedidos de forma rápida:</p>
-                <a href="https://wa.me/5582996402650?text=Olá!%20Gostaria%20de%20fazer%20um%20pedido." target="_blank" class="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2.5 rounded-xl font-semibold text-sm transition">
-                    <i class="fa-brands fa-whatsapp text-lg"></i> (82) 99640-2650
-                </a>
-            </div>
-        </div>
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 border-t border-slate-800 text-center text-xs text-slate-500">
-            <p>&copy; 2026 Hiper Popular Drogarias. Todos os direitos reservados. Imagens meramente ilustrativas. Medicamentos sob prescrição requerem validação presencial conforme legislação sanitária vigente.</p>
-        </div>
-    </footer>
 
-    <!-- Botão Flutuante WhatsApp -->
-    <a href="https://wa.me/5582996402650?text=Olá!%20Acessei%20o%20site%20da%20farmácia%20e%20gostaria%20de%20obter%20mais%20informações." target="_blank" class="fixed bottom-6 right-6 z-40 bg-emerald-600 hover:bg-emerald-700 text-white w-14 h-14 rounded-full shadow-2xl flex items-center justify-center text-2xl transition transform hover:scale-105 focus:outline-none" aria-label="Fale conosco pelo WhatsApp">
-        <i class="fa-brands fa-whatsapp"></i>
-    </a>
-
-    <!-- Modal do Carrinho -->
-    <div id="cart-modal" class="fixed inset-0 z-50 hidden bg-slate-900/50 backdrop-blur-sm transition-opacity">
-        <div class="absolute inset-y-0 right-0 max-w-md w-full bg-white shadow-2xl flex flex-col">
-            <!-- Header do Carrinho -->
-            <div class="p-6 border-b border-slate-100 flex items-center justify-between bg-slate-50">
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center font-bold">
-                        <i class="fa-solid fa-shopping-bag"></i>
-                    </div>
+                <!-- Prescription Notice Badge -->
+                <div class="mt-8 bg-amber-50 border-l-4 border-amber-500 p-4 rounded-r-xl max-w-4xl mx-auto text-xs sm:text-sm text-amber-900 flex items-start gap-3 shadow-sm">
+                    <i class="fa-solid fa-triangle-exclamation text-amber-600 text-lg flex-shrink-0 mt-0.5"></i>
                     <div>
-                        <h3 class="font-bold text-slate-800 text-lg">Seu Carrinho</h3>
-                        <p class="text-xs text-slate-500" id="cart-item-count-label">0 itens selecionados</p>
+                        <span class="font-bold">Aviso Sanitário e de Orientação:</span> Medicamentos sujeitos a prescrição médica ou retenção de receita não estão disponíveis para compra automática direta. A validação e o envio de receitas serão solicitados por nossos farmacêuticos via atendimento do WhatsApp conforme regulamentação da ANVISA.
                     </div>
                 </div>
-                <button onclick="toggleCartModal()" class="text-slate-400 hover:text-slate-600 p-2 text-xl focus:outline-none">
-                    <i class="fa-solid fa-xmark"></i>
+            </div>
+        </section>
+
+        <!-- PRODUCTS CATALOG SECTION -->
+        <section id="produtos" class="py-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
+                <div>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold text-pharmacy-blue mb-1">Catálogo de Produtos</h2>
+                    <p class="text-pharmacy-subtext text-sm">Selecione a quantidade desejada e adicione ao seu pedido.</p>
+                </div>
+
+                <!-- Search & Filter Controls -->
+                <div class="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
+                    <!-- Search Input -->
+                    <div class="relative min-w-[220px]">
+                        <input type="text" id="search-input" placeholder="Buscar produto..." aria-label="Buscar produto pelo nome" class="w-full bg-white border border-gray-300 rounded-xl pl-10 pr-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-pharmacy-blue focus:border-transparent shadow-sm">
+                        <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3.5 text-gray-400 text-sm"></i>
+                    </div>
+
+                    <!-- Sorting Dropdown -->
+                    <select id="sort-select" aria-label="Ordenar produtos por preço" class="bg-white border border-gray-300 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-pharmacy-blue shadow-sm text-pharmacy-subtext">
+                        <option value="default">Ordenar por</option>
+                        <option value="price-asc">Menor Preço</option>
+                        <option value="price-desc">Maior Preço</option>
+                        <option value="name-asc">Nome (A-Z)</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Active Filter Badge Display -->
+            <div id="active-filter-container" class="mb-6 hidden flex items-center gap-2">
+                <span class="text-xs text-pharmacy-subtext font-semibold">Filtro ativo:</span>
+                <span id="active-filter-badge" class="bg-pharmacy-blue text-white text-xs px-3 py-1 rounded-full flex items-center gap-2 shadow-sm">
+                    <span id="active-filter-text">Categoria</span>
+                    <button id="clear-filter-btn" class="hover:text-pharmacy-red focus:outline-none"><i class="fa-solid fa-xmark"></i></button>
+                </span>
+            </div>
+
+            <!-- Products Grid Container -->
+            <div id="products-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                <!-- Product cards inserted dynamically via JS -->
+            </div>
+
+            <!-- Empty State for Products -->
+            <div id="empty-products" class="hidden text-center py-16 bg-white rounded-2xl border border-dashed border-gray-300 my-6">
+                <i class="fa-solid fa-box-open text-4xl text-gray-300 mb-3"></i>
+                <h3 class="text-lg font-bold text-pharmacy-blue mb-1">Nenhum produto encontrado</h3>
+                <p class="text-sm text-pharmacy-subtext mb-4">Tente buscar por outro termo ou selecione uma categoria diferente.</p>
+                <button id="reset-search-btn" class="bg-pharmacy-blue hover:bg-pharmacy-blueDark text-white font-semibold text-xs px-5 py-2.5 rounded-lg transition-colors">
+                    Limpar Filtros
                 </button>
             </div>
+        </section>
 
-            <!-- Corpo / Lista de Itens -->
-            <div id="cart-items-container" class="flex-1 overflow-y-auto p-6 space-y-4 divide-y divide-slate-100">
-                <!-- Preenchido via JS -->
+        <!-- ABOUT SECTION -->
+        <section id="sobre" class="py-16 bg-white border-t border-b border-gray-200">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                    <div>
+                        <span class="text-xs font-bold uppercase tracking-wider text-pharmacy-red">Quem Somos</span>
+                        <h2 class="text-2xl sm:text-3xl font-extrabold text-pharmacy-blue mt-1 mb-4">Tradição, Qualidade e Respeito com a Sua Saúde</h2>
+                        <p class="text-pharmacy-subtext leading-relaxed mb-4 text-sm sm:text-base">
+                            A <strong class="text-pharmacy-blue">Farmácia Santa Sophia</strong> atua com o compromisso constante de oferecer atendimento ético, responsável e humanizado. Nosso foco é proporcionar mais comodidade para você e sua família no acesso a produtos essenciais para o bem-estar diário.
+                        </p>
+                        <p class="text-pharmacy-subtext leading-relaxed mb-6 text-sm sm:text-base">
+                            Trabalhamos com marcas reconhecidas, cumprindo rigorosamente todas as determinações das autoridades de vigilância sanitária. Nossa equipe está sempre pronta para orientar com cordialidade e eficiência.
+                        </p>
+                        
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="p-4 bg-pharmacy-lightBg rounded-xl border border-gray-100">
+                                <i class="fa-solid fa-shield-halved text-2xl text-pharmacy-blue mb-2"></i>
+                                <h4 class="font-bold text-sm text-pharmacy-blue">Atendimento Responsável</h4>
+                                <p class="text-xs text-pharmacy-subtext mt-1">Orientação clara e respeito absoluto à legislação sanitária.</p>
+                            </div>
+                            <div class="p-4 bg-pharmacy-lightBg rounded-xl border border-gray-100">
+                                <i class="fa-solid fa-clock text-2xl text-pharmacy-blue mb-2"></i>
+                                <h4 class="font-bold text-sm text-pharmacy-blue">Agilidade no Pedido</h4>
+                                <p class="text-xs text-pharmacy-subtext mt-1">Facilidade para montar seu carrinho e enviar pelo WhatsApp.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="relative">
+                        <div class="rounded-2xl overflow-hidden shadow-xl border-4 border-pharmacy-lightBg">
+                            <img src="https://images.unsplash.com/photo-1576602976047-174e57a47881?auto=format&fit=crop&w=800&q=80" 
+                                 alt="Fachada e interior da Farmácia Santa Sophia" 
+                                 class="w-full h-80 sm:h-96 object-cover"
+                                 onerror="this.src='https://placehold.co/800x600/0B3080/ffffff?text=Farm%C3%A1cia+Santa+Sophia'">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CONTACT & LOCATION SECTION -->
+        <section id="contato" class="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-12">
+                <span class="text-xs font-bold uppercase tracking-wider text-pharmacy-red">Fale Conosco</span>
+                <h2 class="text-2xl sm:text-3xl font-extrabold text-pharmacy-blue mt-1 mb-2">Canais de Atendimento</h2>
+                <p class="text-pharmacy-subtext text-sm sm:text-base">Estamos prontos para atender você com total atenção. Entre em contato ou visite nossa unidade.</p>
             </div>
 
-            <!-- Rodapé / Totais -->
-            <div class="p-6 border-t border-slate-100 bg-slate-50 space-y-4">
-                <div class="space-y-2">
-                    <div class="flex justify-between text-sm text-slate-600">
-                        <span>Subtotal dos produtos</span>
-                        <span id="cart-subtotal">R$ 0,00</span>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Card 1: Phone & WhatsApp -->
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 flex flex-col justify-between hover:shadow-md transition-shadow">
+                    <div>
+                        <div class="w-12 h-12 bg-pharmacy-blue/10 rounded-xl flex items-center justify-center text-pharmacy-blue text-xl mb-4">
+                            <i class="fa-brands fa-whatsapp"></i>
+                        </div>
+                        <h3 class="font-bold text-lg text-pharmacy-blue mb-2">WhatsApp & Telefone</h3>
+                        <p class="text-sm text-pharmacy-subtext mb-1">Central de Atendimento e Pedidos:</p>
+                        <p class="text-base font-semibold text-pharmacy-text">(82) 99640-2650</p>
                     </div>
-                    <div class="flex justify-between text-lg font-bold text-slate-900 pt-2 border-t border-slate-200">
-                        <span>Valor Total</span>
-                        <span id="cart-total" class="text-primary">R$ 0,00</span>
+                    <button onclick="window.pharmacyApp.openGeneralWhatsApp()" class="mt-6 w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2.5 rounded-xl transition-colors text-sm flex items-center justify-center gap-2">
+                        <i class="fa-brands fa-whatsapp text-lg"></i> Conversar agora
+                    </button>
+                </div>
+
+                <!-- Card 2: Operating Hours -->
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 flex flex-col justify-between hover:shadow-md transition-shadow">
+                    <div>
+                        <div class="w-12 h-12 bg-pharmacy-blue/10 rounded-xl flex items-center justify-center text-pharmacy-blue text-xl mb-4">
+                            <i class="fa-regular fa-clock"></i>
+                        </div>
+                        <h3 class="font-bold text-lg text-pharmacy-blue mb-2">Horário de Funcionamento</h3>
+                        <ul class="text-sm text-pharmacy-subtext space-y-2">
+                            <li class="flex justify-between border-b border-gray-100 pb-1">
+                                <span>Segunda a Sexta:</span> <span class="font-semibold text-pharmacy-text">07:30 - 21:00</span>
+                            </li>
+                            <li class="flex justify-between border-b border-gray-100 pb-1">
+                                <span>Sábados:</span> <span class="font-semibold text-pharmacy-text">08:00 - 20:00</span>
+                            </li>
+                            <li class="flex justify-between">
+                                <span>Domingos e Feriados:</span> <span class="font-semibold text-pharmacy-text">08:00 - 14:00</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="mt-6 text-xs text-pharmacy-subtext bg-pharmacy-lightBg p-3 rounded-lg text-center">
+                        <i class="fa-solid fa-circle-info mr-1 text-pharmacy-blue"></i> Pedidos via WhatsApp atendidos no horário comercial.
                     </div>
                 </div>
+
+                <!-- Card 3: Location -->
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 flex flex-col justify-between hover:shadow-md transition-shadow">
+                    <div>
+                        <div class="w-12 h-12 bg-pharmacy-blue/10 rounded-xl flex items-center justify-center text-pharmacy-blue text-xl mb-4">
+                            <i class="fa-solid fa-location-dot"></i>
+                        </div>
+                        <h3 class="font-bold text-lg text-pharmacy-blue mb-2">Endereço da Loja</h3>
+                        <p class="text-sm text-pharmacy-subtext mb-2">
+                            Av. Principal da Cidade, Nº 100 - Centro<br>
+                            Maceió - AL / CEP: 57000-000
+                        </p>
+                    </div>
+                    <a href="https://maps.google.com" target="_blank" rel="noopener noreferrer" class="mt-6 w-full bg-pharmacy-blue hover:bg-pharmacy-blueDark text-white font-semibold py-2.5 rounded-xl transition-colors text-sm flex items-center justify-center gap-2 text-center">
+                        <i class="fa-solid fa-map-location-dot"></i> Abrir no Google Maps
+                    </a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- CART SLIDE-OVER DRAWER -->
+    <div id="cart-drawer" class="fixed inset-0 z-50 overflow-hidden pointer-events-none">
+        <!-- Backdrop -->
+        <div id="cart-backdrop" class="absolute inset-0 bg-black/50 opacity-0 transition-opacity duration-300 pointer-events-none"></div>
+
+        <div class="fixed inset-y-0 right-0 max-w-full flex pl-10">
+            <div id="cart-panel" class="cart-drawer closed w-screen max-w-md bg-white shadow-2xl flex flex-col pointer-events-auto">
                 
-                <div class="space-y-2">
-                    <button onclick="checkoutWhatsApp()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-3.5 rounded-xl font-bold shadow-md shadow-emerald-600/30 transition flex items-center justify-center gap-2">
-                        <i class="fa-brands fa-whatsapp text-lg"></i> Finalizar Pedido pelo WhatsApp
-                    </button>
-                    <button onclick="clearCart()" class="w-full bg-slate-200 hover:bg-slate-300 text-slate-700 py-2.5 rounded-xl font-semibold text-sm transition">
-                        Limpar Carrinho
+                <!-- Drawer Header -->
+                <div class="p-4 sm:p-6 bg-pharmacy-blue text-white flex items-center justify-between shadow-md">
+                    <div class="flex items-center gap-3">
+                        <i class="fa-solid fa-cart-shopping text-xl"></i>
+                        <h2 class="text-lg font-bold">Seu Carrinho</h2>
+                        <span id="cart-drawer-count" class="bg-pharmacy-red text-white text-xs font-bold px-2.5 py-0.5 rounded-full">0 itens</span>
+                    </div>
+                    <button id="close-cart-btn" aria-label="Fechar carrinho" class="text-white hover:text-gray-300 text-xl p-1 focus:outline-none">
+                        <i class="fa-solid fa-xmark"></i>
                     </button>
                 </div>
-                <p class="text-[11px] text-slate-400 text-center">O pedido será gerado e enviado diretamente para nosso atendimento no WhatsApp para confirmação.</p>
+
+                <!-- Drawer Body (Items list) -->
+                <div id="cart-items-container" class="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4">
+                    <!-- Items rendered dynamically via JS -->
+                </div>
+
+                <!-- Drawer Footer (Total & Checkout Action) -->
+                <div class="p-4 sm:p-6 bg-gray-50 border-t border-gray-200 space-y-4">
+                    <div class="space-y-2">
+                        <div class="flex justify-between text-sm text-pharmacy-subtext">
+                            <span>Quantidade de itens:</span>
+                            <span id="cart-total-qty" class="font-semibold text-pharmacy-text">0</span>
+                        </div>
+                        <div class="flex justify-between text-base font-extrabold text-pharmacy-blue border-t border-gray-200 pt-2">
+                            <span>Valor Total Estimado:</span>
+                            <span id="cart-total-price" class="text-xl text-pharmacy-red">R$ 0,00</span>
+                        </div>
+                    </div>
+
+                    <p class="text-[11px] text-gray-500 text-center">
+                        *Preços e disponibilidade sujeitos à confirmação comercial no atendimento via WhatsApp.
+                    </p>
+
+                    <div class="space-y-2 pt-1">
+                        <button id="checkout-whatsapp-btn" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg transition-all duration-200 flex items-center justify-center gap-2 animate-pulse-subtle">
+                            <i class="fa-brands fa-whatsapp text-2xl"></i>
+                            <span>Finalizar Pedido pelo WhatsApp</span>
+                        </button>
+                        
+                        <div class="flex gap-2">
+                            <button id="clear-cart-btn" class="w-1/2 bg-white hover:bg-red-50 text-red-600 border border-red-200 font-semibold py-2 rounded-lg text-xs transition-colors">
+                                <i class="fa-regular fa-trash-can mr-1"></i> Limpar Carrinho
+                            </button>
+                            <button id="continue-shopping-btn" class="w-1/2 bg-white hover:bg-gray-100 text-pharmacy-subtext border border-gray-300 font-semibold py-2 rounded-lg text-xs transition-colors">
+                                Continuar Comprando
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>
 
-    <!-- JavaScript Application Logic -->
-    <script>
-        // Dados centrais de produtos (Fictícios para demonstração, seguros e sem remédios controlados)
-        const productsData = [
-            { id: 1, name: "Sabonete Líquido Hidratante", category: "Higiene pessoal", price: 12.90, desc: "Fórmula suave para uso diário em todos os tipos de pele.", image: "https://placehold.co/400x300/fee2e2/dc2626?text=Sabonete+Liquido" },
-            { id: 2, name: "Creme Hidratante Corporal", category: "Cuidados com a pele", price: 24.90, desc: "Hidratação profunda por 24 horas com toque sedoso.", image: "https://placehold.co/400x300/fef3c7/d97706?text=Creme+Hidratante" },
-            { id: 3, name: "Creme Dental Proteção Total", category: "Higiene bucal", price: 7.50, desc: "Proteção contra cáries, placa e gengivite.", image: "https://placehold.co/400x300/e0f2fe.png?text=Creme+Dental" },
-            { id: 4, name: "Vitamina C efervescente 1g", category: "Vitaminas e suplementos", price: 19.90, desc: "Auxilia no funcionamento do sistema imune.", image: "https://placehold.co/400x300/dcfce7/16a34a?text=Vitamina+C" },
-            { id: 5, name: "Shampoo Anticaspa", category: "Higiene pessoal", price: 18.50, desc: "Limpeza profunda e controle da caspa desde o primeiro uso.", image: "https://placehold.co/400x300/fee2e2/dc2626?text=Shampoo" },
-            { id: 6, name: "Protetor Solar Facial FPS 50", category: "Cuidados com a pele", price: 49.90, desc: "Alta proteção UVA/UVB com toque seco e antioleosidade.", image: "https://placehold.co/400x300/fef3c7/d97706?text=Protetor+Solar" },
-            { id: 7, name: "Fita Dental com Menta 50m", category: "Higiene bucal", price: 9.90, desc: "Desliza facilmente entre os dentes sem desfiar.", image: "https://placehold.co/400x300/e0f2fe.png?text=Fita+Dental" },
-            { id: 8, name: "Multivitamínico AZ 60 Cápsulas", category: "Vitaminas e suplementos", price: 34.90, desc: "Completo de A a Z para complementar sua nutrição diária.", image: "https://placehold.co/400x300/dcfce7/16a34a?text=Multivitaminico" },
-            { id: 9, name: "Fralda Infantil G - Pacote Econômico", category: "Bebês e maternidade", price: 42.90, desc: "Até 12 horas de proteção seca para o seu bebê.", image: "https://placehold.co/400x300/fce7f3/db2777?text=Fralda+Infantil" },
-            { id: 10, name: "Lenço Umedecido com 100un", category: "Bebês e maternidade", price: 11.50, desc: "Fórmula com extrato de aloe vera e livre de álcool.", image: "https://placehold.co/400x300/fce7f3/db2777?text=Lenco+Umedecido" },
-            { id: 11, name: "Kit Curativos Adesivos 35un", category: "Primeiros socorros", price: 8.90, desc: "Respiráveis, flexíveis e resistentes à água.", image: "https://placehold.co/400x300/f1f5f9/475569?text=Curativos" },
-            { id: 12, name: "Álcool em Gel 70% 500ml", category: "Primeiros socorros", price: 10.50, desc: "Higienizante antisséptico para as mãos com agentes hidratantes.", image: "https://placehold.co/400x300/f1f5f9/475569?text=Alcool+Gel" },
-            { id: 13, name: "Colônia Desodorante Feminina", category: "Perfumaria", price: 59.90, desc: "Fragrância marcante e refrescante para o dia a dia.", image: "https://placehold.co/400x300/fae8ff/9333ea?text=Colonia" },
-            { id: 14, name: "Sabonete em Barra Puro Vegetal", category: "Higiene pessoal", price: 4.50, desc: "Limpeza suave que perfuma e cuida da pele.", image: "https://placehold.co/400x300/fee2e2/dc2626?text=Sabonete+Barra" }
-        ];
+    <!-- FLOATING WHATSAPP BUTTON -->
+    <div class="fixed bottom-6 right-6 z-30">
+        <button onclick="window.pharmacyApp.openGeneralWhatsApp()" aria-label="Abrir conversa no WhatsApp da Farmácia" class="group bg-emerald-500 hover:bg-emerald-600 text-white rounded-full p-3.5 sm:p-4 shadow-2xl flex items-center gap-3 transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-4 focus:ring-emerald-300">
+            <i class="fa-brands fa-whatsapp text-2xl sm:text-3xl"></i>
+            <span class="max-w-0 overflow-hidden whitespace-nowrap group-hover:max-w-xs transition-all duration-300 ease-in-out font-bold text-sm pr-1">
+                Fale Conosco
+            </span>
+        </button>
+    </div>
 
-        const categoriesList = [
-            "Todos",
-            "Higiene pessoal",
-            "Cuidados com a pele",
-            "Higiene bucal",
-            "Vitaminas e suplementos",
-            "Bebês e maternidade",
-            "Primeiros socorros",
-            "Perfumaria"
-        ];
-
-        let cart = JSON.parse(localStorage.getItem('hiper_popular_cart')) || [];
-        let currentCategory = "Todos";
-
-        // Inicialização da aplicação
-        document.addEventListener('DOMContentLoaded', () => {
-            renderCategories();
-            renderProducts(productsData);
-            updateCartUI();
-        });
-
-        // Alternar menu mobile
-        function toggleMobileMenu() {
-            const menu = document.getElementById('mobile-menu');
-            menu.classList.toggle('hidden');
-        }
-
-        // Renderizar Categorias
-        function renderCategories() {
-            const container = document.getElementById('categories-container');
-            container.innerHTML = categoriesList.map(cat => {
-                const isActive = currentCategory === cat;
-                let icon = "fa-pills";
-                if(cat === "Higiene pessoal") icon = "fa-pump-soap";
-                if(cat === "Cuidados com a pele") icon = "fa-hand-holding-droplet";
-                if(cat === "Higiene bucal") icon = "fa-tooth";
-                if(cat === "Vitaminas e suplementos") icon = "fa-carrot";
-                if(cat === "Bebês e maternidade") icon = "fa-baby";
-                if(cat === "Primeiros socorros") icon = "fa-kit-medical";
-                if(cat === "Perfumaria") icon = "fa-spray-can-sparkles";
-                if(cat === "Todos") icon = "fa-border-all";
-
-                return `
-                    <button onclick="filterByCategory('${cat}')" class="flex flex-col items-center justify-center p-4 rounded-2xl border transition text-center ${isActive ? 'bg-primary text-white border-primary shadow-md shadow-primary/20' : 'bg-white text-slate-700 border-slate-200 hover:border-primary/50'}">
-                        <i class="fa-solid ${icon} text-xl mb-2"></i>
-                        <span class="text-xs font-semibold leading-tight">${cat}</span>
-                    </button>
-                `;
-            }).join('');
-        }
-
-        // Filtrar por categoria
-        function filterByCategory(category) {
-            currentCategory = category;
-            renderCategories();
-            filterProducts();
-            // Scroll suave para produtos se estiver fora
-            document.getElementById('produtos').scrollIntoView({ behavior: 'smooth' });
-        }
-
-        // Filtrar e buscar produtos
-        function filterProducts() {
-            const query = document.getElementById('search-input').value.toLowerCase();
-            const filtered = productsData.filter(product => {
-                const matchesCategory = currentCategory === "Todos" || product.category === currentCategory;
-                const matchesQuery = product.name.toLowerCase().includes(query) || product.desc.toLowerCase().includes(query);
-                return matchesCategory && matchesQuery;
-            });
-            renderProducts(filtered);
-        }
-
-        // Renderizar produtos no catálogo
-        function renderProducts(products) {
-            const grid = document.getElementById('products-grid');
-            const noProducts = document.getElementById('no-products');
-
-            if (products.length === 0) {
-                grid.innerHTML = '';
-                noProducts.classList.remove('hidden');
-                return;
-            }
-
-            noProducts.classList.add('hidden');
-            grid.innerHTML = products.map(product => `
-                <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex flex-col justify-between transition hover:shadow-md">
-                    <div>
-                        <div class="h-48 bg-slate-100 overflow-hidden relative">
-                            <img src="${product.image}" alt="${product.name}" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/400x300/f8fafc/64748b?text=Produto'">
-                            <span class="absolute top-3 left-3 bg-white/90 backdrop-blur-sm text-slate-700 text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider">${product.category}</span>
+    <!-- FOOTER SECTION -->
+    <footer class="bg-pharmacy-blueDark text-white border-t-4 border-pharmacy-red">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+                
+                <!-- Col 1: Brand Info -->
+                <div class="space-y-4 md:col-span-1">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center p-1">
+                            <svg viewBox="0 0 100 100" class="w-full h-full">
+                                <circle cx="50" cy="50" r="46" fill="white" stroke="#0B3080" stroke-width="7" />
+                                <path d="M 38 20 H 62 V 38 H 80 V 62 H 62 V 80 H 38 V 62 H 20 V 38 H 38 Z" fill="#0B3080" />
+                                <path d="M 60 38 A 12 12 0 1 0 60 62" fill="none" stroke="white" stroke-width="6" stroke-linecap="round"/>
+                                <path d="M 52 42 A 8 8 0 0 1 52 58" fill="#E30613"/>
+                            </svg>
                         </div>
-                        <div class="p-5 space-y-2">
-                            <h3 class="font-bold text-slate-800 text-base leading-snug">${product.name}</h3>
-                            <p class="text-xs text-slate-500 line-clamp-2">${product.desc}</p>
-                        </div>
+                        <span class="text-base font-black text-white">FARMÁCIA SANTA SOPHIA</span>
                     </div>
-                    <div class="p-5 pt-0 flex items-center justify-between mt-4">
-                        <div>
-                            <span class="text-xs text-slate-400 block">Preço Unitário</span>
-                            <span class="text-lg font-extrabold text-primary">R$ ${product.price.toFixed(2).replace('.', ',')}</span>
-                        </div>
-                        <button onclick="addToCart(${product.id})" class="bg-primary hover:bg-red-700 text-white px-4 py-2.5 rounded-xl font-semibold text-sm transition flex items-center gap-2 shadow-sm">
-                            <i class="fa-solid fa-cart-plus"></i> Adicionar
+                    <p class="text-xs text-blue-200 leading-relaxed">
+                        Sua vitrine digital de saúde e beleza. Compromisso com a qualidade, preços acessíveis e entrega ágil para você.
+                    </p>
+                </div>
+
+                <!-- Col 2: Navigation Links -->
+                <div>
+                    <h4 class="font-bold text-sm text-pharmacy-red uppercase tracking-wider mb-3">Navegação</h4>
+                    <ul class="space-y-2 text-xs text-blue-100">
+                        <li><a href="#inicio" class="hover:text-white transition-colors">Início</a></li>
+                        <li><a href="#categorias" class="hover:text-white transition-colors">Categorias de Produtos</a></li>
+                        <li><a href="#produtos" class="hover:text-white transition-colors">Catálogo Completo</a></li>
+                        <li><a href="#sobre" class="hover:text-white transition-colors">Sobre a Farmácia</a></li>
+                        <li><a href="#contato" class="hover:text-white transition-colors">Canais de Contato</a></li>
+                    </ul>
+                </div>
+
+                <!-- Col 3: Legal Disclaimers -->
+                <div>
+                    <h4 class="font-bold text-sm text-pharmacy-red uppercase tracking-wider mb-3">Informações Legais</h4>
+                    <p class="text-xs text-blue-200 leading-relaxed mb-2">
+                        Farmácia Santa Sophia LTDA.<br>
+                        CNPJ: 00.000.000/0001-00<br>
+                        AFE Anvisa nº: 1.23456.7
+                    </p>
+                    <p class="text-[11px] text-blue-300">
+                        O envio de mensagens via WhatsApp não estabelece vínculo contratual imediato até confirmação pelo atendente.
+                    </p>
+                </div>
+
+                <!-- Col 4: Social & WhatsApp Action -->
+                <div>
+                    <h4 class="font-bold text-sm text-pharmacy-red uppercase tracking-wider mb-3">Redes Sociais & Contato</h4>
+                    <div class="flex gap-3 mb-4">
+                        <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Acessar nosso Instagram" class="w-9 h-9 bg-white/10 hover:bg-pharmacy-red rounded-full flex items-center justify-center transition-colors">
+                            <i class="fa-brands fa-instagram"></i>
+                        </a>
+                        <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Acessar nosso Facebook" class="w-9 h-9 bg-white/10 hover:bg-pharmacy-red rounded-full flex items-center justify-center transition-colors">
+                            <i class="fa-brands fa-facebook-f"></i>
+                        </a>
+                        <button onclick="window.pharmacyApp.openGeneralWhatsApp()" aria-label="Contato via WhatsApp" class="w-9 h-9 bg-white/10 hover:bg-emerald-600 rounded-full flex items-center justify-center transition-colors">
+                            <i class="fa-brands fa-whatsapp"></i>
                         </button>
                     </div>
+                    <p class="text-xs text-blue-200">
+                        Dúvidas? Ligue para: <br><strong class="text-white">(82) 99640-2650</strong>
+                    </p>
                 </div>
-            `).join('');
-        }
 
-        // Gerenciamento do Carrinho
-        function toggleCartModal() {
-            const modal = document.getElementById('cart-modal');
-            modal.classList.toggle('hidden');
-            renderCartItems();
-        }
+            </div>
 
-        function addToCart(productId) {
-            const product = productsData.find(p => p.id === productId);
-            if (!product) return;
+            <!-- Footer Bottom Notice -->
+            <div class="pt-6 border-t border-blue-900/60 text-center text-xs text-blue-300 space-y-2">
+                <p>&copy; 2026 Farmácia Santa Sophia. Todos os direitos reservados.</p>
+                <p class="text-[10px] text-blue-400">
+                    As informações contidas neste site não devem ser usadas para automedicação e não substituem, em hipótese alguma, as orientações dadas pelo profissional da área médica.
+                </p>
+            </div>
+        </div>
+    </footer>
 
-            const existingItem = cart.find(item => item.id === productId);
-            if (existingItem) {
-                existingItem.quantity += 1;
-            } else {
-                cart.push({ ...product, quantity: 1 });
+    <script>
+        /**
+         * FARMÁCIA SANTA SOPHIA - CENTRAL APP ENGINE
+         */
+        (function() {
+            // Configurable store details
+            const CONFIG = {
+                pharmacyName: "Farmácia Santa Sophia", // Target brand name
+                whatsappNumber: "5582996402650",      // Clean WhatsApp format: Country code + DDD + Number
+                formattedPhone: "(82) 99640-2650",
+                storageKey: "santa_sophia_cart_v1"
+            };
+
+            // Master categories configuration
+            const CATEGORIES = [
+                { id: "todos", name: "Todos", icon: "fa-border-all" },
+                { id: "higiene", name: "Higiene pessoal", icon: "fa-pump-soap" },
+                { id: "skincare", name: "Cuidados com a pele", icon: "fa-sparkles" },
+                { id: "bucal", name: "Higiene bucal", icon: "fa-tooth" },
+                { id: "vitaminas", name: "Vitaminas e suplementos", icon: "fa-capsules" },
+                { id: "bebes", name: "Bebês e maternidade", icon: "fa-baby" },
+                { id: "socorros", name: "Primeiros socorros", icon: "fa-kit-medical" },
+                { id: "perfumaria", name: "Perfumaria", icon: "fa-spray-can" }
+            ];
+
+            // Demo catalog products array
+            const PRODUCTS = [
+                {
+                    id: 1,
+                    name: "Sabonete Líquido Hidratante 250ml",
+                    category: "higiene",
+                    categoryLabel: "Higiene pessoal",
+                    price: 12.90,
+                    description: "Limpeza suave para a pele com fragrância delicada e pH neutro.",
+                    image: "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?auto=format&fit=crop&w=400&q=80",
+                    available: true
+                },
+                {
+                    id: 2,
+                    name: "Creme Hidratante Corporal 200g",
+                    category: "skincare",
+                    categoryLabel: "Cuidados com a pele",
+                    price: 24.90,
+                    description: "Hidratação profunda por 24 horas para todos os tipos de pele.",
+                    image: "https://images.unsplash.com/photo-1608248597379-22212a49646a?auto=format&fit=crop&w=400&q=80",
+                    available: true
+                },
+                {
+                    id: 3,
+                    name: "Creme Dental Proteção Total 90g",
+                    category: "bucal",
+                    categoryLabel: "Higiene bucal",
+                    price: 7.50,
+                    description: "Proteção contra cáries e hálito fresco por mais tempo.",
+                    image: "https://images.unsplash.com/photo-1559598467-f8b76c8155d0?auto=format&fit=crop&w=400&q=80",
+                    available: true
+                },
+                {
+                    id: 4,
+                    name: "Vitamina C 1000mg e Zinco 30 Comprimidos",
+                    category: "vitaminas",
+                    categoryLabel: "Vitaminas e suplementos",
+                    price: 19.90,
+                    description: "Auxilia no fortalecimento da imunidade e na proteção antioxidante.",
+                    image: "https://images.unsplash.com/photo-1584017911766-d451b3d0e843?auto=format&fit=crop&w=400&q=80",
+                    available: true
+                },
+                {
+                    id: 5,
+                    name: "Fralda Infantil Pacote Mega (M)",
+                    category: "bebes",
+                    categoryLabel: "Bebês e maternidade",
+                    price: 42.90,
+                    description: "Até 12 horas de proteção contra vazamentos com toque suave de algodão.",
+                    image: "https://images.unsplash.com/photo-1519689680058-324335c77eba?auto=format&fit=crop&w=400&q=80",
+                    available: true
+                },
+                {
+                    id: 6,
+                    name: "Kit Curativos Adesivos 40 Unidades",
+                    category: "socorros",
+                    categoryLabel: "Primeiros socorros",
+                    price: 9.90,
+                    description: "Resistentes à água e respiráveis para proteção de pequenos cortes.",
+                    image: "https://images.unsplash.com/photo-1603398938378-e54eab446dde?auto=format&fit=crop&w=400&q=80",
+                    available: true
+                },
+                {
+                    id: 7,
+                    name: "Desodorante Roll-on Sem Perfume 50ml",
+                    category: "higiene",
+                    categoryLabel: "Higiene pessoal",
+                    price: 11.50,
+                    description: "Proteção antitranspirante 48h sem manchas em roupas.",
+                    image: "https://images.unsplash.com/photo-1535585209827-a15fcdbc4c2d?auto=format&fit=crop&w=400&q=80",
+                    available: true
+                },
+                {
+                    id: 8,
+                    name: "Protetor Solar Facial FPS 50 50g",
+                    category: "skincare",
+                    categoryLabel: "Cuidados com a pele",
+                    price: 39.90,
+                    description: "Toque seco, alta proteção UVA/UVB e prevenção de manchas.",
+                    image: "https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?auto=format&fit=crop&w=400&q=80",
+                    available: true
+                }
+            ];
+
+            // App State
+            let state = {
+                cart: [],
+                selectedCategory: "todos",
+                searchQuery: "",
+                sortBy: "default",
+                isCartOpen: false
+            };
+
+            // Currency formatting helper
+            function formatCurrency(value) {
+                return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
             }
 
-            saveCart();
-            updateCartUI();
-            
-            // Feedback visual rápido abrindo o carrinho ou notificação
-            toggleCartModal();
-        }
-
-        function updateQuantity(productId, delta) {
-            const item = cart.find(i => i.id === productId);
-            if (!item) return;
-
-            item.quantity += delta;
-            if (item.quantity <= 0) {
-                cart = cart.filter(i => i.id !== productId);
+            // Load cart from LocalStorage
+            function loadCart() {
+                try {
+                    const savedCart = localStorage.getItem(CONFIG.storageKey);
+                    if (savedCart) {
+                        state.cart = JSON.parse(savedCart);
+                    }
+                } catch (e) {
+                    console.error("Erro ao carregar o carrinho do LocalStorage:", e);
+                    state.cart = [];
+                }
             }
 
-            saveCart();
-            updateCartUI();
-            renderCartItems();
-        }
-
-        function removeFromCart(productId) {
-            cart = cart.filter(i => i.id !== productId);
-            saveCart();
-            updateCartUI();
-            renderCartItems();
-        }
-
-        function clearCart() {
-            cart = [];
-            saveCart();
-            updateCartUI();
-            renderCartItems();
-        }
-
-        function saveCart() {
-            localStorage.setItem('hiper_popular_cart', JSON.stringify(cart));
-        }
-
-        function updateCartUI() {
-            const badge = document.getElementById('cart-badge');
-            const totalCount = cart.reduce((sum, item) => sum + item.quantity, 0);
-            badge.innerText = totalCount;
-            
-            const countLabel = document.getElementById('cart-item-count-label');
-            countLabel.innerText = `${totalCount} ${totalCount === 1 ? 'item selecionado' : 'itens selecionados'}`;
-        }
-
-        function renderCartItems() {
-            const container = document.getElementById('cart-items-container');
-            const subtotalEl = document.getElementById('cart-subtotal');
-            const totalEl = document.getElementById('cart-total');
-
-            if (cart.length === 0) {
-                container.innerHTML = `
-                    <div class="text-center py-12 text-slate-400 space-y-3">
-                        <i class="fa-solid fa-shopping-bag text-4xl text-slate-300"></i>
-                        <p class="text-sm font-medium">Seu carrinho está vazio.</p>
-                        <p class="text-xs text-slate-400">Adicione produtos para iniciar seu pedido.</p>
-                    </div>
-                `;
-                subtotalEl.innerText = "R$ 0,00";
-                totalEl.innerText = "R$ 0,00";
-                return;
+            // Save cart to LocalStorage
+            function saveCart() {
+                try {
+                    localStorage.setItem(CONFIG.storageKey, JSON.stringify(state.cart));
+                } catch (e) {
+                    console.error("Erro ao salvar o carrinho no LocalStorage:", e);
+                }
             }
 
-            let subtotal = 0;
-            container.innerHTML = cart.map(item => {
-                const itemSubtotal = item.price * item.quantity;
-                subtotal += itemSubtotal;
-                return `
-                    <div class="py-4 flex items-center justify-between gap-4">
-                        <div class="flex-1">
-                            <h4 class="font-semibold text-slate-800 text-sm">${item.name}</h4>
-                            <span class="text-xs text-slate-500">R$ ${item.price.toFixed(2).replace('.', ',')} un.</span>
+            // Render Categories Grid
+            function renderCategories() {
+                const grid = document.getElementById("categories-grid");
+                if (!grid) return;
+
+                grid.innerHTML = CATEGORIES.map(cat => {
+                    const isActive = state.selectedCategory === cat.id;
+                    return `
+                        <button onclick="window.pharmacyApp.setCategory('${cat.id}')" 
+                                class="p-3 sm:p-4 rounded-xl text-center border transition-all duration-200 flex flex-col items-center justify-center gap-2 group ${
+                                    isActive 
+                                    ? 'bg-pharmacy-blue text-white border-pharmacy-blue shadow-md' 
+                                    : 'bg-white hover:bg-pharmacy-lightBg border-gray-200 text-pharmacy-text'
+                                }">
+                            <i class="fa-solid ${cat.icon} text-lg sm:text-xl ${isActive ? 'text-pharmacy-red' : 'text-pharmacy-blue group-hover:scale-110'} transition-transform"></i>
+                            <span class="text-xs font-semibold leading-tight">${cat.name}</span>
+                        </button>
+                    `;
+                }).join('');
+            }
+
+            // Render Products Grid with Search and Filters
+            function renderProducts() {
+                const grid = document.getElementById("products-grid");
+                const emptyState = document.getElementById("empty-products");
+                if (!grid) return;
+
+                let filtered = PRODUCTS.filter(p => {
+                    const matchesCategory = state.selectedCategory === "todos" || p.category === state.selectedCategory;
+                    const matchesSearch = p.name.toLowerCase().includes(state.searchQuery.toLowerCase()) || 
+                                          p.description.toLowerCase().includes(state.searchQuery.toLowerCase());
+                    return matchesCategory && matchesSearch;
+                });
+
+                // Sorting logic
+                if (state.sortBy === "price-asc") {
+                    filtered.sort((a, b) => a.price - b.price);
+                } else if (state.sortBy === "price-desc") {
+                    filtered.sort((a, b) => b.price - a.price);
+                } else if (state.sortBy === "name-asc") {
+                    filtered.sort((a, b) => a.name.localeCompare(b.name));
+                }
+
+                // Render Active Filter Badge
+                const activeFilterContainer = document.getElementById("active-filter-container");
+                const activeFilterText = document.getElementById("active-filter-text");
+                if (state.selectedCategory !== "todos") {
+                    const catObj = CATEGORIES.find(c => c.id === state.selectedCategory);
+                    if (activeFilterText) activeFilterText.textContent = `Categoria: ${catObj ? catObj.name : state.selectedCategory}`;
+                    activeFilterContainer.classList.remove("hidden");
+                } else {
+                    activeFilterContainer.classList.add("hidden");
+                }
+
+                if (filtered.length === 0) {
+                    grid.innerHTML = "";
+                    emptyState.classList.remove("hidden");
+                    return;
+                }
+
+                emptyState.classList.add("hidden");
+
+                grid.innerHTML = filtered.map(product => {
+                    const cartItem = state.cart.find(item => item.id === product.id);
+                    const qtyInCart = cartItem ? cartItem.quantity : 0;
+
+                    return `
+                        <div class="bg-white rounded-2xl border border-gray-200 shadow-sm hover:shadow-lg transition-all duration-300 flex flex-col justify-between overflow-hidden group">
+                            <div>
+                                <div class="relative bg-gray-100 h-48 overflow-hidden">
+                                    <img src="${product.image}" alt="${product.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" onerror="this.src='https://placehold.co/400x300/0B3080/ffffff?text=${encodeURIComponent(product.name)}'">
+                                    <span class="absolute top-3 left-3 bg-white/90 backdrop-blur-sm text-pharmacy-blue text-[11px] font-bold px-2.5 py-1 rounded-full shadow-sm">
+                                        ${product.categoryLabel}
+                                    </span>
+                                </div>
+                                <div class="p-5">
+                                    <h3 class="font-bold text-base text-pharmacy-blue mb-1 line-clamp-1">${product.name}</h3>
+                                    <p class="text-xs text-pharmacy-subtext mb-3 line-clamp-2">${product.description}</p>
+                                    <div class="text-xl font-extrabold text-pharmacy-red">
+                                        ${formatCurrency(product.price)}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="p-5 pt-0">
+                                <div class="flex items-center gap-2 pt-2 border-t border-gray-100">
+                                    <!-- Quantity Input Selector -->
+                                    <div class="flex items-center border border-gray-300 rounded-lg overflow-hidden bg-gray-50">
+                                        <button onclick="window.pharmacyApp.changeCardQty(${product.id}, -1)" class="px-2.5 py-1.5 text-gray-600 hover:bg-gray-200 transition-colors">
+                                            <i class="fa-solid fa-minus text-xs"></i>
+                                        </button>
+                                        <input type="text" id="qty-input-${product.id}" value="1" readonly class="w-8 text-center text-xs font-bold bg-transparent">
+                                        <button onclick="window.pharmacyApp.changeCardQty(${product.id}, 1)" class="px-2.5 py-1.5 text-gray-600 hover:bg-gray-200 transition-colors">
+                                            <i class="fa-solid fa-plus text-xs"></i>
+                                        </button>
+                                    </div>
+
+                                    <!-- Add to Cart Button -->
+                                    <button onclick="window.pharmacyApp.addToCartFromCard(${product.id})" class="flex-1 bg-pharmacy-blue hover:bg-pharmacy-blueDark text-white text-xs font-bold py-2 px-3 rounded-lg transition-all flex items-center justify-center gap-1.5 shadow-sm">
+                                        <i class="fa-solid fa-cart-plus"></i>
+                                        <span>Adicionar ${qtyInCart > 0 ? `(${qtyInCart})` : ''}</span>
+                                    </button>
+                                </div>
+                            </div>
                         </div>
-                        <div class="flex items-center gap-2">
-                            <button onclick="updateQuantity(${item.id}, -1)" class="w-7 h-7 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg flex items-center justify-center font-bold text-xs">-</button>
-                            <span class="text-sm font-bold w-6 text-center">${item.quantity}</span>
-                            <button onclick="updateQuantity(${item.id}, 1)" class="w-7 h-7 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg flex items-center justify-center font-bold text-xs">+</button>
-                        </div>
-                        <div class="text-right">
-                            <span class="text-sm font-bold text-slate-900 block">R$ ${itemSubtotal.toFixed(2).replace('.', ',')}</span>
-                            <button onclick="removeFromCart(${item.id})" class="text-xs text-red-500 hover:text-red-700 mt-1"><i class="fa-solid fa-trash"></i></button>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-
-            subtotalEl.innerText = `R$ ${subtotal.toFixed(2).replace('.', ',')}`;
-            totalEl.innerText = `R$ ${subtotal.toFixed(2).replace('.', ',')}`;
-        }
-
-        // Finalização do Pedido pelo WhatsApp
-        function checkoutWhatsApp() {
-            if (cart.length === 0) {
-                alert("Seu carrinho está vazio. Adicione produtos antes de finalizar.");
-                return;
+                    `;
+                }).join('');
             }
 
-            let message = "Olá! Gostaria de fazer um pedido na Farmácia Hiper Popular Drogarias.\n\nMeu pedido:\n";
-            let total = 0;
+            // Update Cart UI components
+            function updateCartUI() {
+                const totalQty = state.cart.reduce((sum, item) => sum + item.quantity, 0);
+                const totalPrice = state.cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
 
-            cart.forEach(item => {
-                const itemSubtotal = item.price * item.quantity;
-                total += itemSubtotal;
-                message += `• ${item.name}\n  Quantidade: ${item.quantity}\n  Valor unitário: R$ ${item.price.toFixed(2).replace('.', ',')}\n  Subtotal: R$ ${itemSubtotal.toFixed(2).replace('.', ',')}\n\n`;
+                // Update Header Badges
+                const badge = document.getElementById("cart-badge");
+                const drawerCount = document.getElementById("cart-drawer-count");
+                const totalQtyElem = document.getElementById("cart-total-qty");
+                const totalPriceElem = document.getElementById("cart-total-price");
+
+                if (badge) {
+                    badge.textContent = totalQty;
+                    if (totalQty > 0) {
+                        badge.classList.remove("hidden");
+                    } else {
+                        badge.classList.add("hidden");
+                    }
+                }
+
+                if (drawerCount) drawerCount.textContent = `${totalQty} itens`;
+                if (totalQtyElem) totalQtyElem.textContent = totalQty;
+                if (totalPriceElem) totalPriceElem.textContent = formatCurrency(totalPrice);
+
+                // Render Drawer Cart Items
+                const container = document.getElementById("cart-items-container");
+                if (!container) return;
+
+                if (state.cart.length === 0) {
+                    container.innerHTML = `
+                        <div class="h-full flex flex-col items-center justify-center text-center p-6 text-pharmacy-subtext">
+                            <i class="fa-solid fa-cart-flatbed text-5xl text-gray-300 mb-3"></i>
+                            <p class="font-bold text-pharmacy-blue text-base mb-1">Seu carrinho está vazio</p>
+                            <p class="text-xs text-gray-500">Adicione produtos do catálogo para visualizar e solicitar seu pedido pelo WhatsApp.</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                container.innerHTML = state.cart.map(item => {
+                    const subtotal = item.price * item.quantity;
+                    return `
+                        <div class="flex gap-3 bg-pharmacy-lightBg p-3 rounded-xl border border-gray-200 items-center">
+                            <img src="${item.image}" alt="${item.name}" class="w-16 h-16 rounded-lg object-cover bg-white border border-gray-100 flex-shrink-0" onerror="this.src='https://placehold.co/100x100/0B3080/ffffff?text=Produto'">
+                            <div class="flex-1 min-w-0">
+                                <h4 class="font-bold text-xs text-pharmacy-blue truncate">${item.name}</h4>
+                                <div class="text-xs text-pharmacy-subtext mt-0.5">Unit: ${formatCurrency(item.price)}</div>
+                                <div class="text-xs font-bold text-pharmacy-red mt-0.5">Subtotal: ${formatCurrency(subtotal)}</div>
+                                
+                                <div class="flex items-center justify-between mt-2">
+                                    <div class="flex items-center border border-gray-300 rounded bg-white overflow-hidden">
+                                        <button onclick="window.pharmacyApp.updateQuantity(${item.id}, ${item.quantity - 1})" class="px-2 py-0.5 text-xs text-gray-600 hover:bg-gray-100">-</button>
+                                        <span class="px-2 text-xs font-bold text-pharmacy-text">${item.quantity}</span>
+                                        <button onclick="window.pharmacyApp.updateQuantity(${item.id}, ${item.quantity + 1})" class="px-2 py-0.5 text-xs text-gray-600 hover:bg-gray-100">+</button>
+                                    </div>
+                                    <button onclick="window.pharmacyApp.removeFromCart(${item.id})" class="text-red-500 hover:text-red-700 text-xs flex items-center gap-1 font-semibold">
+                                        <i class="fa-regular fa-trash-can"></i> Remover
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            // WhatsApp Order Checkout Functionality
+            function checkoutWhatsApp() {
+                if (state.cart.length === 0) {
+                    alert("Seu carrinho está vazio! Selecione ao menos um produto antes de finalizar.");
+                    return;
+                }
+
+                const totalValue = state.cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+
+                // Build clean formatted message body as required
+                let message = `Olá! Gostaria de fazer um pedido na ${CONFIG.pharmacyName}.\n\n`;
+                message += `*Meu pedido:*\n\n`;
+
+                state.cart.forEach((item, index) => {
+                    const subtotal = item.price * item.quantity;
+                    message += `${index + 1}. *${item.name}*\n`;
+                    message += `   Quantidade: ${item.quantity}\n`;
+                    message += `   Valor unitário: ${formatCurrency(item.price)}\n`;
+                    message += `   Subtotal: ${formatCurrency(subtotal)}\n\n`;
+                });
+
+                message += `*Valor total dos produtos:* ${formatCurrency(totalValue)}\n\n`;
+                message += `Por favor, confirmem a disponibilidade dos produtos e as condições de entrega ou retirada.\n\n`;
+                message += `Obrigado!`;
+
+                const encodedMsg = encodeURIComponent(message);
+                const whatsappUrl = `https://wa.me/${CONFIG.whatsappNumber}?text=${encodedMsg}`;
+
+                // Open WhatsApp in a new tab
+                window.open(whatsappUrl, '_blank');
+            }
+
+            // General WhatsApp Inquiry Action
+            function openGeneralWhatsApp() {
+                const message = `Olá! Acessei o site da ${CONFIG.pharmacyName} e gostaria de obter mais informações.`;
+                const encodedMsg = encodeURIComponent(message);
+                const url = `https://wa.me/${CONFIG.whatsappNumber}?text=${encodedMsg}`;
+                window.open(url, '_blank');
+            }
+
+            // Drawer toggle logic
+            function toggleCart(open) {
+                const drawer = document.getElementById("cart-panel");
+                const backdrop = document.getElementById("cart-backdrop");
+                const wrapper = document.getElementById("cart-drawer");
+
+                state.isCartOpen = typeof open === 'boolean' ? open : !state.isCartOpen;
+
+                if (state.isCartOpen) {
+                    wrapper.classList.remove("pointer-events-none");
+                    backdrop.classList.remove("opacity-0", "pointer-events-none");
+                    backdrop.classList.add("opacity-100");
+                    drawer.classList.remove("closed");
+                    drawer.classList.add("open");
+                } else {
+                    backdrop.classList.remove("opacity-100");
+                    backdrop.classList.add("opacity-0", "pointer-events-none");
+                    drawer.classList.remove("open");
+                    drawer.classList.add("closed");
+                    setTimeout(() => {
+                        if (!state.isCartOpen) wrapper.classList.add("pointer-events-none");
+                    }, 300);
+                }
+            }
+
+            // Publicly exposed methods for HTML events
+            window.pharmacyApp = {
+                setCategory: function(catId) {
+                    state.selectedCategory = catId;
+                    renderCategories();
+                    renderProducts();
+                },
+                changeCardQty: function(productId, delta) {
+                    const input = document.getElementById(`qty-input-${productId}`);
+                    if (!input) return;
+                    let current = parseInt(input.value) || 1;
+                    current = Math.max(1, current + delta);
+                    input.value = current;
+                },
+                addToCartFromCard: function(productId) {
+                    const product = PRODUCTS.find(p => p.id === productId);
+                    if (!product) return;
+
+                    const input = document.getElementById(`qty-input-${productId}`);
+                    const quantityToAdd = input ? parseInt(input.value) || 1 : 1;
+
+                    const existingIndex = state.cart.findIndex(item => item.id === productId);
+                    if (existingIndex > -1) {
+                        state.cart[existingIndex].quantity += quantityToAdd;
+                    } else {
+                        state.cart.push({ ...product, quantity: quantityToAdd });
+                    }
+
+                    saveCart();
+                    updateCartUI();
+                    renderProducts();
+
+                    // Reset card input back to 1
+                    if (input) input.value = 1;
+
+                    // Automatically open drawer for visual feedback
+                    toggleCart(true);
+                },
+                updateQuantity: function(productId, newQty) {
+                    if (newQty <= 0) {
+                        this.removeFromCart(productId);
+                        return;
+                    }
+                    const item = state.cart.find(i => i.id === productId);
+                    if (item) {
+                        item.quantity = newQty;
+                        saveCart();
+                        updateCartUI();
+                        renderProducts();
+                    }
+                },
+                removeFromCart: function(productId) {
+                    state.cart = state.cart.filter(i => i.id !== productId);
+                    saveCart();
+                    updateCartUI();
+                    renderProducts();
+                },
+                clearCart: function() {
+                    if (state.cart.length === 0) return;
+                    state.cart = [];
+                    saveCart();
+                    updateCartUI();
+                    renderProducts();
+                },
+                openGeneralWhatsApp: openGeneralWhatsApp,
+                checkoutWhatsApp: checkoutWhatsApp,
+                toggleCart: toggleCart
+            };
+
+            document.addEventListener("DOMContentLoaded", function() {
+                loadCart();
+                renderCategories();
+                renderProducts();
+                updateCartUI();
+
+                // Search Input Binding
+                const searchInput = document.getElementById("search-input");
+                if (searchInput) {
+                    searchInput.addEventListener("input", function(e) {
+                        state.searchQuery = e.target.value;
+                        renderProducts();
+                    });
+                }
+
+                // Sort Selector Binding
+                const sortSelect = document.getElementById("sort-select");
+                if (sortSelect) {
+                    sortSelect.addEventListener("change", function(e) {
+                        state.sortBy = e.target.value;
+                        renderProducts();
+                    });
+                }
+
+                // Cart toggle button events
+                document.getElementById("cart-toggle-btn")?.addEventListener("click", () => toggleCart(true));
+                document.getElementById("close-cart-btn")?.addEventListener("click", () => toggleCart(false));
+                document.getElementById("cart-backdrop")?.addEventListener("click", () => toggleCart(false));
+                document.getElementById("continue-shopping-btn")?.addEventListener("click", () => toggleCart(false));
+                document.getElementById("clear-cart-btn")?.addEventListener("click", () => window.pharmacyApp.clearCart());
+                document.getElementById("checkout-whatsapp-btn")?.addEventListener("click", checkoutWhatsApp);
+
+                // Clear filter button
+                document.getElementById("clear-filter-btn")?.addEventListener("click", function() {
+                    window.pharmacyApp.setCategory("todos");
+                });
+
+                document.getElementById("reset-search-btn")?.addEventListener("click", function() {
+                    state.searchQuery = "";
+                    if (searchInput) searchInput.value = "";
+                    window.pharmacyApp.setCategory("todos");
+                });
+
+                // Mobile Menu Toggle
+                const mobileMenuBtn = document.getElementById("mobile-menu-btn");
+                const mobileMenu = document.getElementById("mobile-menu");
+                if (mobileMenuBtn && mobileMenu) {
+                    mobileMenuBtn.addEventListener("click", function() {
+                        mobileMenu.classList.toggle("hidden");
+                    });
+                }
             });
-
-            message += `Valor total dos produtos: R$ ${total.toFixed(2).replace('.', ',')}\n\nPor favor, confirmem a disponibilidade dos produtos e as condições de entrega ou retirada.\nObrigado!`;
-
-            const encodedMessage = encodeURIComponent(message);
-            const whatsappUrl = `https://wa.me/5582996402650?text=${encodedMessage}`;
-
-            window.open(whatsappUrl, '_blank');
-        }
+        })();
     </script>
 </body>
 </html>
